@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>We Are Muslims</title>
+</head>
+<body>
+    <h1>ليست مقاطعه بل استغناء</h1>
+    <h2>قائمة المقاطعه</h2>
+    <form id="food-tracker-form" onsubmit="event.preventDefault(); trackFood();">
+        <label for="food-item">Food Item:</label>
+        <input type="text" id="searchInput" placeholder="Search for food..." oninput="showSuggestions()">
+        <div id="suggestions" style="display: none;"></div>
+
+    </form>
+    <h2>قائمة البدائل</h2>
+</body>
+</html>
+
+<style>
+    *{
+        font-family: 'Segoe UI' , 'Arabic Typesetting' , 'Arial';
+        text-align: center;
+    }
+</style>
+
+
+<script>
+      const foodItems  = [
+      { name: "Pepsi"},
+      { name: "شبسي"},
+      { name: "Mero Jam/Honey/..."},
+      { name: "Heinz"},
+      { name: "Nescafa"},
+      { name: "(All) Nestle"},
+      { name: "Red Bull"},
+      { name: "Mirinda"},
+      { name: "Aquafina"},
+      { name: "Lay's"},
+      { name: "Maggi"},
+      { name: "7UP"},
+      { name: "Cocacola"},
+      { name: "Sprite"},
+      { name: "Fanta"},
+      { name: "OREO"},
+      { name: "DairyMilk (Qadbilary)"},
+      { name: "Maaza"},
+      { name: "Trident"},
+      { name: "Clorecs"},
+      { name: "Chicklets"},
+      { name: "KFC"},
+      { name: "MACDONALDS"},
+      { name: "Circle K"},
+      { name: "Pizza Hut"},
+      { name: "كرنش"},
+      { name: "Cheetos"},
+      { name: "Doritos"},
+      { name: "Shweeppes"},
+      { name: "Baraka بركه"},
+      { name: "Danone"},
+      { name: "Fayrooz"},
+
+
+];
+
+
+        function showSuggestions() {
+            const query = document.getElementById("searchInput").value.toLowerCase();
+            const results = foodItems.filter(item => item.name.toLowerCase().includes(query));
+            const suggestionsDiv = document.getElementById("suggestions");
+            suggestionsDiv.innerHTML = '';
+
+            if (results.length > 0) {
+                suggestionsDiv.style.display = 'block';
+                results.forEach(item => {
+                    const suggestion = document.createElement("p");
+                    suggestion.textContent = `${item.name} `;
+                    suggestion.onclick = () => selectSuggestion(item.name);
+                    suggestionsDiv.appendChild(suggestion);
+                });
+            } else {
+                suggestionsDiv.style.display = 'none';
+            }
+        }
+
+        function selectSuggestion(foodName) {
+            document.getElementById("searchInput").value = foodName;
+            document.getElementById("suggestions").style.display = 'none';
+        }
+
+        function trackFood() {
+            const amount = parseFloat(document.getElementById("amount").value);
+            const foodName = document.getElementById("searchInput").value;
+            const foodItem = foodItems.find(item => item.name === foodName);
+            const trackedFoodDiv = document.getElementById("tracked-food");
+            if (foodItem) {
+                const totalCalories = (foodItem.calories / 100) * amount;
+                trackedFoodDiv.innerHTML += `<p>${amount}g of ${foodName}: ${Math.round(totalCalories)} calories</p>`;
+                showToast(`Tracked ${amount}g of ${foodName}: ${Math.round(totalCalories)} calories`);
+            } else {
+                showToast(`Food item not found!`);
+            }
+        }
+</script>

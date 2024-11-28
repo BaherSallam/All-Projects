@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Easy Programming</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        /* Reset */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        /* Root Variables */
+        :root {
+            --primary-color: #007BFF;
+            --secondary-color: #1E90FF;
+            --dark-bg: #181818;
+            --light-bg: #F7F7F7;
+            --text-light: #E4E4E4;
+            --text-dark: #333;
+            --link-hover: #0056b3;
+            --border-radius: 10px;
+            --transition-speed: 0.3s;
+        }
+
+        /* General Styles */
+        body {
+            font-family: 'Roboto', sans-serif;
+            transition: background-color var(--transition-speed), color var(--transition-speed);
+            background-color: var(--light-bg);
+            color: var(--text-dark);
+            margin: 0;
+            padding: 0;
+        }
+
+        h1, h2 {
+            color: var(--text-light);
+        }
+
+        a {
+            color: var(--primary-color);
+            text-decoration: none;
+            transition: color var(--transition-speed);
+        }
+
+        a:hover {
+            color: var(--link-hover);
+        }
+
+        /* Light/Dark Mode */
+        body.light-mode {
+            background-color: var(--light-bg);
+            color: var(--text-dark);
+        }
+
+        body.dark-mode {
+            background-color: var(--dark-bg);
+            color: var(--text-light);
+        }
+
+        /* Header Styles */
+        header {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: white;
+            text-align: center;
+            padding: 80px 20px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            position: relative;
+            animation: fadeIn 1.5s ease-out;
+        }
+
+        header h1 {
+            font-size: 3.5rem;
+            font-weight: 700;
+            margin-bottom: 20px;
+        }
+
+        header p {
+            font-size: 1.4rem;
+            font-weight: 400;
+        }
+
+        /* Navigation */
+        nav {
+            display: flex;
+            justify-content: center;
+            background-color: #333;
+            padding: 15px 0;
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+
+        nav a {
+            color: white;
+            text-align: center;
+            margin: 0 20px;
+            font-size: 1.2rem;
+            padding: 10px;
+            transition: background-color var(--transition-speed), transform var(--transition-speed);
+        }
+
+        nav a:hover {
+            background-color: var(--secondary-color);
+            transform: translateY(-3px);
+        }
+
+        /* Main Content */
+        main {
+            max-width: 1200px;
+            margin: 50px auto;
+            padding: 0 20px;
+        }
+
+        .section {
+            display: flex;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 30px;
+            margin-bottom: 60px;
+        }
+
+        .section .card {
+            background: white;
+            border-radius: var(--border-radius);
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+            padding: 30px;
+            width: 30%;
+            transition: transform var(--transition-speed), box-shadow var(--transition-speed);
+            cursor: pointer;
+            overflow: hidden;
+            box-sizing: border-box;
+        }
+
+        .section .card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 12px 24px rgba(0, 0, 0, 0.1);
+        }
+
+        .section h2 {
+            color: var(--primary-color);
+            font-size: 2.5rem;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .section ul {
+            list-style: none;
+            font-size: 1.1rem;
+            padding-left: 0;
+        }
+
+        .section ul li {
+            margin: 15px 0;
+            transition: color var(--transition-speed);
+        }
+
+        .section ul li:hover {
+            color: var(--secondary-color);
+        }
+
+        button {
+            padding: 15px 30px;
+            background-color: var(--secondary-color);
+            color: white;
+            font-size: 1.1rem;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: transform var(--transition-speed), background-color var(--transition-speed);
+        }
+
+        button:hover {
+            background-color: var(--primary-color);
+            transform: translateY(-3px);
+        }
+
+        /* Toggle Button */
+        .toggle-btn {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background-color: var(--secondary-color);
+            color: white;
+            padding: 10px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            border: none;
+            transition: background-color var(--transition-speed);
+        }
+
+        .toggle-btn:hover {
+            background-color: var(--primary-color);
+        }
+
+        /* Educational Content */
+        .educational-content {
+            margin-top: 20px;
+            padding: 40px;
+            background: #fff;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+            border-radius: 10px;
+            overflow-y: auto;
+            max-height: 80vh;
+        }
+
+        .educational-content h3 {
+            color: var(--primary-color);
+            font-size: 2.2rem;
+            margin-bottom: 20px;
+        }
+
+        .educational-content p {
+            font-size: 1.1rem;
+            margin-bottom: 20px;
+        }
+
+        .educational-content code {
+            background-color: #f4f4f4;
+            padding: 10px;
+            border-radius: 5px;
+            font-family: monospace;
+            display: block;
+            margin-bottom: 15px;
+        }
+
+        .educational-content pre {
+            font-size: 1.1rem;
+            background-color: #f4f4f4;
+            padding: 20px;
+            border-radius: 10px;
+            overflow-x: auto;
+            margin-bottom: 30px;
+        }
+
+        /* Animations */
+        @keyframes fadeIn {
+            0% {
+                opacity: 0;
+            }
+            100% {
+                opacity: 1;
+            }
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            header h1 {
+                font-size: 2.5rem;
+            }
+
+            header p {
+                font-size: 1.2rem;
+            }
+
+            nav {
+                flex-direction: column;
+                padding: 20px 0;
+            }
+
+            nav a {
+                margin: 10px 0;
+            }
+
+            .section .card {
+                width: 100%;
+            }
+
+            button {
+                width: 100%;
+                padding: 12px;
+                font-size: 1rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            header h1 {
+                font-size: 2rem;
+            }
+
+            header p {
+                font-size: 1rem;
+            }
+
+            .section h2 {
+                font-size: 2rem;
+            }
+
+            button {
+                font-size: 1rem;
+            }
+        }
+    </style>
+</head>
+<body class="light-mode">
+    <header>
+        <h1>Easy Programming</h1>
+        <p>Learn programming step-by-step with easy-to-follow lessons!</p>
+    </header>
+
+    <nav>
+        <a href="#">Home</a>
+        <a href="#">HTML</a>
+        <a href="#">CSS</a>
+        <a href="#">JavaScript</a>
+        <a href="#">Contact</a>
+    </nav>
+
+    <main>
+        <section class="section">
+            <div class="card" onclick="showLearnHTML()">
+                <h2>Learn HTML</h2>
+                <ul>
+                    <li>Start with structure</li>
+                    <li>Understand tags and attributes</li>
+                    <li>Build your first page</li>
+                </ul>
+            </div>
+            <div class="card" onclick="showLearnCSS()">
+                <h2>Learn CSS</h2>
+                <ul>
+                    <li>Apply styles to your page</li>
+                    <li>Learn about positioning</li>
+                    <li>Master colors and typography</li>
+                </ul>
+            </div>
+            <div class="card" onclick="showLearnJS()">
+                <h2>Learn JavaScript</h2>
+                <ul>
+                    <li>Manipulate the DOM</li>
+                    <li>Write interactive scripts</li>
+                    <li>Learn about APIs</li>
+                </ul>
+            </div>
+        </section>
+
+        <button class="toggle-btn" onclick="toggleMode()">Switch to Dark Mode</button>
+
+        <button onclick="showEducationalContent()">Start Now</button>
+
+        <div class="educational-content" id="educational-content"></div>
+    </main>
+
+    <footer>
+        <p>&copy; 2024 Easy Programming. All rights reserved.</p>
+    </footer>
+
+    <script>
+        function toggleMode() {
+            const body = document.body;
+            const toggleButton = document.querySelector('.toggle-btn');
+            body.classList.toggle('dark-mode');
+            body.classList.toggle('light-mode');
+            toggleButton.textContent = body.classList.contains('dark-mode') ? 'Switch to Light Mode' : 'Switch to Dark Mode';
+        }
+
+        function showEducationalContent() {
+            const content = document.getElementById('educational-content');
+            content.innerHTML = `
+                <h3>Welcome to the Programming Learning Hub</h3>
+                <p>Here, you'll get a comprehensive understanding of the basics of HTML, CSS, and JavaScript, with real code examples!</p>
+                
+                <h3>HTML: The Foundation of Web Pages</h3>
+                <p>HTML (Hypertext Markup Language) is the standard language used to create and design websites. Every webpage is constructed using HTML elements...</p>
+                <pre><code>&lt;!DOCTYPE html&gt;
+&lt;html&gt;
+    &lt;head&gt;
+        &lt;title&gt;Page Title&lt;/title&gt;
+    &lt;/head&gt;
+    &lt;body&gt;
+        &lt;h1&gt;Hello, World!&lt;/h1&gt;
+        &lt;p&gt;This is a simple HTML page.&lt;/p&gt;
+    &lt;/body&gt;
+&lt;/html&gt;</code></pre>
+
+                <h3>CSS: Styling Your Website</h3>
+                <p>CSS (Cascading Style Sheets) is used to style and layout web pages. It controls the colors, fonts, spacing, and layout...</p>
+                <pre><code>body {
+    background-color: lightblue;
+    color: darkblue;
+}
+
+h1 {
+    text-align: center;
+    font-size: 2.5rem;
+}</code></pre>
+
+                <h3>JavaScript: Adding Interactivity</h3>
+                <p>JavaScript makes your web pages interactive. It allows you to manipulate the HTML and CSS, respond to user events, and create dynamic content...</p>
+                <pre><code>function greetUser() {
+    alert('Welcome to the website!');
+}
+
+greetUser();</code></pre>
+
+                <p>We will dive deeper into these concepts in each lesson, with real-life examples and hands-on coding challenges...</p>
+            `;
+        }
+    </script>
+</body>
+</html>

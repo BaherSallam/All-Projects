@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tic Tac Toe</title>
+  <style>
+    /* General Reset */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      background: linear-gradient(to right, #00c6ff, #0072ff);
+      font-family: 'Arial', sans-serif;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      color: #fff;
+      overflow: hidden;
+    }
+
+    h1 {
+      font-size: 3rem;
+      margin-bottom: 20px;
+      text-transform: uppercase;
+      animation: fadeIn 2s ease;
+    }
+
+    .game-container {
+      text-align: center;
+      padding: 30px;
+      background: rgba(0, 0, 0, 0.7);
+      border-radius: 10px;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+      max-width: 400px;
+      width: 100%;
+    }
+
+    .board {
+      display: grid;
+      grid-template-columns: repeat(3, 100px);
+      grid-template-rows: repeat(3, 100px);
+      gap: 10px;
+      margin-top: 20px;
+      justify-items: center;
+    }
+
+    .cell {
+      width: 100px;
+      height: 100px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 2.5rem;
+      background-color: #353535;
+      border: 2px solid #fff;
+      cursor: pointer;
+      border-radius: 10px;
+      transition: background-color 0.3s ease, transform 0.2s ease;
+    }
+
+    .cell:hover {
+      background-color: #ddd;
+      transform: scale(1.1);
+    }
+
+    .winner {
+      font-size: 1.5rem;
+      margin-top: 20px;
+      color: #ffeb3b;
+      font-weight: bold;
+    }
+
+    .restart-btn {
+      padding: 12px 30px;
+      background-color: #ff5722;
+      color: #fff;
+      font-size: 1.25rem;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: background 0.3s ease;
+      margin-top: 20px;
+    }
+
+    .restart-btn:hover {
+      background-color: #e64a19;
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+      }
+      to {
+        opacity: 1;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <h1>Tic Tac Toe By Baher Sallam</h1>
+<br>
+<h4>All Right Reserved 2023/2024</h4>
+  <div class="game-container">
+    <div class="board">
+      
+      <div class="cell" onclick="makeMove(0)"></div>
+      <div class="cell" onclick="makeMove(1)"></div>
+      <div class="cell" onclick="makeMove(2)"></div>
+      <div class="cell" onclick="makeMove(3)"></div>
+      <div class="cell" onclick="makeMove(4)"></div>
+      <div class="cell" onclick="makeMove(5)"></div>
+      <div class="cell" onclick="makeMove(6)"></div>
+      <div class="cell" onclick="makeMove(7)"></div>
+      <div class="cell" onclick="makeMove(8)"></div>
+    </div>
+
+    <div class="winner" id="winnerMessage"></div>
+    <button class="restart-btn" onclick="restartGame()">Restart Game</button>
+  </div>
+
+  <script>
+    let board = ['', '', '', '', '', '', '', '', '']; 
+    let currentPlayer = 'X'; 
+    let gameOver = false;
+
+    const cells = document.querySelectorAll('.cell');
+    const winnerMessage = document.getElementById('winnerMessage');
+
+    function makeMove(index) {
+      if (gameOver || board[index] !== '') return; 
+      board[index] = currentPlayer;
+      cells[index].innerText = currentPlayer;
+      checkWinner();
+      currentPlayer = currentPlayer === 'X' ? 'O' : 'X'; 
+    }
+
+    function checkWinner() {
+      const winPatterns = [
+        [0, 1, 2], [3, 4, 5], [6, 7, 8], 
+        [0, 3, 6], [1, 4, 7], [2, 5, 8], 
+        [0, 4, 8], [2, 4, 6] 
+      ];
+
+      for (let pattern of winPatterns) {
+        const [a, b, c] = pattern;
+        if (board[a] && board[a] === board[b] && board[a] === board[c]) {
+          gameOver = true;
+          winnerMessage.innerText = `${board[a]} wins!`;
+          setTimeout(() => {
+            alert(`${board[a]} wins!`);
+          }, 100);
+          return;
+        }
+      }
+
+      if (board.every(cell => cell !== '')) {
+        gameOver = true;
+        winnerMessage.innerText = 'It\'s a draw!';
+        setTimeout(() => {
+          alert('It\'s a draw!');
+        }, 100);
+      }
+    }
+
+    function restartGame() {
+      board = ['', '', '', '', '', '', '', '', ''];
+      currentPlayer = 'X';
+      gameOver = false;
+      winnerMessage.innerText = '';
+      cells.forEach(cell => cell.innerText = '');
+    }
+  </script>
+
+</body>
+</html>

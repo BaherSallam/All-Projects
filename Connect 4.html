@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Connect 4 - Enhanced</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            flex-direction: column;
+            background-color: #f1f1f1;
+            transition: background-color 0.3s;
+        }
+
+        body.dark-mode {
+            background-color: #2c3e50;
+            color: #fff;
+        }
+
+        .container {
+            text-align: center;
+            width: 650px;
+        }
+
+        h1 {
+            font-size: 2rem;
+            margin-bottom: 20px;
+        }
+
+        .board {
+            display: grid;
+            grid-template-columns: repeat(7, 70px);
+            grid-template-rows: repeat(6, 70px);
+            gap: 5px;
+            margin-bottom: 20px;
+            background-color: #3498db;
+            border: 3px solid #2980b9;
+            border-radius: 10px;
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .cell {
+            width: 70px;
+            height: 70px;
+            background-color: #fff;
+            border-radius: 50%;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+        }
+
+        .cell:hover {
+            transform: scale(1.1);
+        }
+
+        .red {
+            background-color: red;
+        }
+
+        .yellow {
+            background-color: yellow;
+        }
+
+        .game-info {
+            font-size: 1.2rem;
+            color: #333;
+            margin-bottom: 20px;
+        }
+
+        .dark-mode .game-info {
+            color: #fff;
+        }
+
+        button {
+            padding: 10px 20px;
+            background-color: #333;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1rem;
+        }
+
+        button:hover {
+            background-color: #555;
+        }
+
+        .highlight {
+            box-shadow: 0 0 10px 5px rgba(255, 215, 0, 0.7);
+        }
+
+        .reset-btn {
+            display: inline-block;
+            margin-top: 20px;
+            text-decoration: none;
+            font-size: 1.1rem;
+        }
+
+        .settings-container {
+            margin-top: 20px;
+        }
+
+        .settings-container button {
+            background-color: #2980b9;
+            margin: 5px;
+        }
+
+        .dark-mode-btn {
+            background-color: #34495e;
+        }
+
+        .end-screen {
+            display: none;
+            margin-top: 20px;
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #333;
+        }
+
+        .end-screen.show {
+            display: block;
+        }
+
+        .buttons-container {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+        }
+
+        .audio-control {
+            margin-top: 10px;
+        }
+
+        .audio-control input[type="range"] {
+            width: 150px;
+        }
+        
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Connect 4 Game</h1>
+        <div class="board" id="board"></div>
+        <div class="game-info">
+            <p id="turn">Player 1's Turn (Red)</p>
+            <p class="stats" id="stats">Player 1 Wins: 0 | Player 2 Wins: 0</p>
+            <button id="reset" onclick="resetGame()">Restart Game</button>
+        </div>
+        <div class="end-screen" id="endScreen">
+            <p id="endMessage"></p>
+            <div class="buttons-container">
+                <button onclick="resetGame()">Play Again</button>
+                <button onclick="exitGame()">Exit</button>
+            </div>
+        </div>
+        <div class="settings-container">
+            <button onclick="toggleDarkMode()" class="dark-mode-btn">Toggle Dark Mode</button>
+            <button onclick="toggleAI()">Player vs AI</button>
+            <div class="audio-control">
+                <label for="volume">Volume:</label>
+                <input type="range" id="volume" min="0" max="1" step="0.1" value="0.5">
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const columns = 7;
+        const rows = 6;
+        let board = [];
+        let currentPlayer = 'red';
+        let gameOver = false;
+        let player1Wins = 0;
+        let player2Wins = 0;
+        let isAI = false;  // Default is Player vs Player
+        let winningCells = [];
+        let volume = 0.5;  // Default volume level
+        const boardElement = document.getElementById("board");
+        const turnElement = document.getElementById("turn");
+        const statsElement = document.getElementById("stats");
+        const endScreenElement = document.getElementById("endScreen");
+        const endMessageElement = document.getElementById("endMessage");
+
+        // Initialize the board with empty cells
+        function initializeBoard() {
+            board = Array.from({ length: rows }, () => Array(columns).fill(null));
+            boardElement.innerHTML = "";
+            winningCells = [];
+
+            for (let row = 0; row < rows; row++) {
+                for (let col = 0; col < columns; col++) {
+                    const cell = document.createElement('div');
+                    cell.classList.add('cell');
+                    cell.dataset.row = row;
+                    cell.dataset.col = col;
+                    cell.addEventListener('click', () => handleMove(col));
+                    boardElement.appendChild(cell);
+                }
+            }
+        }
+
+        // Handle player's move
+        function handleMove(col) {
+            if (gameOver) return;
+
+            for (let row = rows - 1; row >= 0; row--) {
+                if (board[row][col] === null) {
+                    board[row][col] = currentPlayer;
+                    const cell = document.querySelector(`[data-row="${row}"][data-col="${col}"]`);
+                    cell.classList.add(currentPlayer);
+                    playMoveSound();
+                    if (checkWin(row, col)) {
+                        highlightWinningCells();
+                        turnElement.textContent = `Player ${currentPlayer === 'red' ? 1 : 2} Wins!`;
+                        updateStats();
+                        gameOver = true;
+                        showEndScreen(`Player ${currentPlayer === 'red' ? 1 : 2} Wins!`);
+                        return;
+                    }
+                    currentPlayer = currentPlayer === 'red' ? 'yellow' : 'red';
+                    turnElement.textContent = `Player ${currentPlayer === 'red' ? 1 : 2}'s Turn (${currentPlayer === 'red' ? 'Red' : 'Yellow'})`;
+                    if (isAI && currentPlayer === 'yellow') {
+                        aiMove();
+                    }
+                    return;
+                }
+            }
+        }
+
+        // AI Move (very simple AI - random move)
+        function aiMove() {
+            const availableColumns = [];
+            for (let col = 0; col < columns; col++) {
+                if (board[0][col] === null) availableColumns.push(col);
+            }
+            const randomCol = availableColumns[Math.floor(Math.random() * availableColumns.length)];
+            for (let row = rows - 1; row >= 0; row--) {
+                if (board[row][randomCol] === null) {
+                    board[row][randomCol] = 'yellow';
+                    const cell = document.querySelector(`[data-row="${row}"][data-col="${randomCol}"]`);
+                    cell.classList.add('yellow');
+                    playMoveSound();
+                    if (checkWin(row, randomCol)) {
+                        highlightWinningCells();
+                        turnElement.textContent = `Player 2 Wins!`;
+                        updateStats();
+                        gameOver = true;
+                        showEndScreen('Player 2 Wins!');
+                    }
+                    currentPlayer = 'red';
+                    turnElement.textContent = `Player 1's Turn (Red)`;
+                    return;
+                }
+            }
+        }
+
+        // Check if the current player has won
+        function checkWin(row, col) {
+            return (
+                checkDirection(row, col, 1, 0) || // Horizontal
+                checkDirection(row, col, 0, 1) || // Vertical
+                checkDirection(row, col, 1, 1) || // Diagonal /
+                checkDirection(row, col, 1, -1)   // Diagonal \
+            );
+        }
+
+        // Check a specific direction for 4 connected pieces
+        function checkDirection(row, col, dRow, dCol) {
+            let count = 1;
+            let cells = [{ row, col }];
+            
+            // Check in the positive direction
+            for (let i = 1; i < 4; i++) {
+                const r = row + i * dRow;
+                const c = col + i * dCol;
+                if (r < 0 || r >= rows || c < 0 || c >= columns || board[r][c] !== currentPlayer) {
+                    break;
+                }
+                count++;
+                cells.push({ row: r, col: c });
+            }
+
+            // Check in the negative direction
+            for (let i = 1; i < 4; i++) {
+                const r = row - i * dRow;
+                const c = col - i * dCol;
+                if (r < 0 || r >= rows || c < 0 || c >= columns || board[r][c] !== currentPlayer) {
+                    break;
+                }
+                count++;
+                cells.push({ row: r, col: c });
+            }
+
+            if (count >= 4) {
+                winningCells = cells;
+                return true;
+            }
+            return false;
+        }
+
+        // Highlight the winning cells
+        function highlightWinningCells() {
+            winningCells.forEach(cell => {
+                const { row, col } = cell;
+                const element = document.querySelector(`[data-row="${row}"][data-col="${col}"]`);
+                element.classList.add('highlight');
+            });
+        }
+
+        // Play sound when a move is made
+        function playMoveSound() {
+            const audio = new Audio('https://www.soundjay.com/button/beep-07.wav');
+            audio.volume = volume;
+            audio.play();
+        }
+
+        // Update the stats
+        function updateStats() {
+            if (currentPlayer === 'red') {
+                player1Wins++;
+            } else {
+                player2Wins++;
+            }
+            statsElement.textContent = `Player 1 Wins: ${player1Wins} | Player 2 Wins: ${player2Wins}`;
+        }
+
+        // Show the end screen with the result
+        function showEndScreen(message) {
+            endMessageElement.textContent = message;
+            endScreenElement.classList.add('show');
+        }
+
+        // Reset the game
+        function resetGame() {
+            gameOver = false;
+            currentPlayer = 'red';
+            turnElement.textContent = `Player 1's Turn (Red)`;
+            endScreenElement.classList.remove('show');
+            initializeBoard();
+        }
+
+        // Exit the game
+        function exitGame() {
+            window.location.reload();
+        }
+
+        // Toggle Dark Mode
+        function toggleDarkMode() {
+            document.body.classList.toggle('dark-mode');
+        }
+
+        // Toggle AI Mode
+        function toggleAI() {
+            isAI = !isAI;
+            if (isAI) {
+                turnElement.textContent = `Player 1's Turn (Red)`;
+            } else {
+                turnElement.textContent = `Player 1's Turn (Red)`;
+            }
+        }
+
+        // Volume Control
+        document.getElementById('volume').addEventListener('input', function() {
+            volume = this.value;
+        });
+
+        // Initialize the board on page load
+        initializeBoard();
+    </script>
+
+    <footer><h1>BS Games.All Right Reserved!!! 2023/2024</h1></footer>
+</body>
+</html>

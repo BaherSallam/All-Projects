@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Best Guessing Game BY BS</title>
+  <style>
+    /* General Reset */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      background: linear-gradient(to right, #ff7e5f, #feb47b);
+      font-family: 'Arial', sans-serif;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      color: #fff;
+      overflow: hidden;
+    }
+
+    h1 {
+      font-size: 3rem;
+      margin-bottom: 20px;
+      text-transform: uppercase;
+      animation: fadeIn 2s ease;
+    }
+
+    .game-container {
+      text-align: center;
+      padding: 30px;
+      background: rgba(0, 0, 0, 0.5);
+      border-radius: 10px;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+      max-width: 400px;
+      width: 100%;
+    }
+
+    .game-container p {
+      font-size: 1.25rem;
+      margin-bottom: 15px;
+    }
+
+    input {
+      padding: 10px;
+      font-size: 1rem;
+      border-radius: 5px;
+      border: none;
+      width: 50%;
+      margin-bottom: 20px;
+      outline: none;
+    }
+
+    button {
+      padding: 12px 30px;
+      background-color: #ff5722;
+      color: #fff;
+      font-size: 1.25rem;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: background 0.3s ease;
+      width: 60%;
+      margin-top: 10px;
+    }
+
+    button:hover {
+      background-color: #e64a19;
+    }
+
+    .result {
+      margin-top: 20px;
+      font-size: 1.2rem;
+      color: #ffeb3b;
+    }
+
+    .success {
+      color: #4caf50;
+      font-weight: bold;
+    }
+
+    .error {
+      color: #f44336;
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+      }
+      to {
+        opacity: 1;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <h1>Guess the Number Game</h1>
+
+  <div class="game-container">
+    <p>Guess a number between <strong>1</strong> and <strong>100</strong></p>
+
+    <input type="number" id="userInput" min="1" max="100" placeholder="Enter your guess" />
+    <button onclick="checkGuess()">Submit Guess</button>
+
+    <div class="result" id="result"></div>
+  </div>
+
+  <script>
+    // Initialize variables
+    const randomNumber = Math.floor(Math.random() * 100) + 1; // Random number between 1 and 100
+    let attempts = 0;
+
+    // Function to check the user's guess
+    function checkGuess() {
+      const userInput = document.getElementById('userInput').value;
+      const resultDiv = document.getElementById('result');
+
+      // Increment attempts count
+      attempts++;
+
+      // Validate input
+      if (!userInput || userInput < 1 || userInput > 100) {
+        resultDiv.innerHTML = '<p class="error">Please enter a number between 1 and 100.</p>';
+        return;
+      }
+
+      // Check if the guess is correct
+      if (parseInt(userInput) === randomNumber) {
+        resultDiv.innerHTML = `<p class="success">Congratulations! You guessed the number in ${attempts} attempts.</p>`;
+        document.querySelector('button').innerText = 'Play Again';
+        document.querySelector('button').onclick = restartGame; // Change button to restart game
+      } else if (parseInt(userInput) < randomNumber) {
+        resultDiv.innerHTML = `<p class="error">Too low! Try a higher number.</p>`;
+      } else {
+        resultDiv.innerHTML = `<p class="error">Too high! Try a lower number.</p>`;
+      }
+
+      document.getElementById('userInput').value = ''; // Clear input field
+      document.getElementById('userInput').focus(); // Focus on input for the next guess
+    }
+
+    // Restart game function
+    function restartGame() {
+      location.reload(); // Reload the page to restart the game
+    }
+  </script>
+
+</body>
+</html>

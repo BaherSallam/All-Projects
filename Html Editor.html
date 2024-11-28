@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Modern HTML Code Editor|| Help in some codes CHAT GPT</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.63.1/codemirror.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.63.1/theme/dracula.min.css">
+    <style>
+        /* Basic Styles */
+        body {
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 0;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        /* Header Styles */
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px;
+            background-color: #333;
+            color: white;
+            /*position: fixed;*/
+            /*top: 0;*/
+            width: 100%;
+            /*z-index: 10;*/
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        .theme-toggle-container {
+            display: flex;
+            align-items: center;
+            margin-left: 20px; /* Changed margin to align left */
+        }
+
+        .theme-toggle-container label {
+            margin-left: 10px;
+        }
+
+        /* Main Content - Layout */
+        .container {
+            display: flex;
+            flex: 1;
+            margin-top: 80px;  /* Make space for the fixed header */
+            width: 100%;
+        }
+
+        #editor {
+            flex: 1;
+            height: 60vh;
+            margin-right: 20px; /* Space between code editor and preview */
+            transition: height 0.3s ease;
+        }
+
+        .output {
+            width: 50%; /* Fixed width for the preview panel */
+            height: 60vh;
+            overflow-y: auto;
+            padding: 10px;
+            background-color: #fff;
+            border-top: 1px solid #ccc;
+            transition: background-color 0.3s ease;
+        }
+
+        button, #theme-toggle {
+            padding: 10px 20px;
+            background-color: #007BFF;
+            color: white;
+            border: none;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.3s ease;
+            border-radius: 5px;
+            margin: 10px;
+        }
+
+        button:hover, #theme-toggle:hover {
+            background-color: #0056b3;
+            transform: scale(1.05);
+        }
+
+        button:active, #theme-toggle:active {
+            transform: scale(1);
+        }
+
+        /* Dark Mode */
+        body.dark {
+            background-color: #121212;
+            color: white;
+        }
+
+        body.dark .output {
+            background-color: #1e1e1e;
+        }
+
+        /* Light Mode */
+        body.light {
+            background-color: #f5f5f5;
+            color: #333;
+        }
+
+        body.light .output {
+            background-color: #fff;
+        }
+
+        /* CodeMirror Theme Adjustments */
+        .CodeMirror {
+            border-radius: 8px;
+        }
+
+        /* Animation */
+        .fade-in {
+            animation: fadeIn 1s ease-out;
+        }
+
+        @keyframes fadeIn {
+            0% { opacity: 0; }
+            100% { opacity: 1; }
+        }
+
+    </style>
+</head>
+<body class="dark">
+
+    <div class="container">
+        <div id="editor" class="fade-in"></div>
+        <div id="output" class="output fade-in"></div>
+    </div>
+
+
+    
+    <button onclick="runCode()">Run Code</button>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.63.1/codemirror.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.63.1/mode/xml/xml.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.63.1/addon/edit/closebrackets.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.63.1/addon/edit/closetag.min.js"></script>
+
+    <script>
+        // CodeMirror initialization
+        const editor = CodeMirror(document.getElementById("editor"), {
+            mode: "xml",                    // Set mode to XML for HTML support
+            theme: "dracula",               // Theme for the editor
+            lineNumbers: true,              // Display line numbers
+            autoCloseTags: true,            // Enable auto-closing tags
+            autoCloseBrackets: true,        // Enable auto-closing brackets
+        });
+
+        // Run the HTML code
+        function runCode() {
+            const code = editor.getValue();
+            const output = document.getElementById('output');
+            output.innerHTML = '';
+
+            const iframe = document.createElement('iframe');
+            iframe.style.width = '100%';
+            iframe.style.height = '100%';
+            output.appendChild(iframe);
+
+            const iframeDocument = iframe.contentWindow.document;
+            iframeDocument.open();
+            iframeDocument.write(code);
+            iframeDocument.close();
+        }
+
+        // Toggle theme for Light/Dark mode
+        function toggleTheme() {
+            const body = document.body;
+            if (document.getElementById('theme-toggle').checked) {
+                body.classList.remove('dark');
+                body.classList.add('light');
+            } else {
+                body.classList.remove('light');
+                body.classList.add('dark');
+            }
+        }
+    
+    
+    </script>
+    <div class="header">
+        <h2>HTML Code Editor</h2>
+        <div class="theme-toggle-container">
+            <input type="checkbox" id="theme-toggle" onchange="toggleTheme()">
+            <label for="theme-toggle">Light/Dark Mode</label>
+        </div>
+    </div>
+</body>
+</html>
